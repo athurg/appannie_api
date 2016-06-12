@@ -1,10 +1,14 @@
 package appannie
 
 import (
+	"time"
 	"testing"
 )
 
 func TestSharingProducts(t *testing.T) {
+	end := time.Now()
+	start := end.AddDate(0, -3, 0)
+
 	//测试前请输入有效的AppAnnieKey
 	client := New("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "")
 	sharings, err := client.SharingProducts()
@@ -14,13 +18,24 @@ func TestSharingProducts(t *testing.T) {
 	}
 
 	for _, s := range sharings {
-		t.Logf("分享者:%s(%d) 类型 %s\n", s.OwnerName, s.OwnerAccountId, s.Vertical)
 		for _, p := range s.Products {
-			prefix := "❌"
-			if p.Status {
-				prefix = "✅"
+			var count = -1
+			resp, err := client.ProductSales(s.OwnerAccountId, p.ProductId, start, end)
+			if err != nil {
+				t.Error(err)
+			} else {
+				count = len(resp.SalesList)
 			}
-			t.Logf("\t %s %-14d %s, 渠道%s\n", prefix, p.ProductId, p.ProductName, p.Market)
+
+			var prefix string
+			if p.Status==false {
+				prefix = "❌"
+			} else if count>0 {
+				prefix = "✅"
+			} else {
+				prefix = "⚠️"
+			}
+			t.Logf("\t%s  %7d-%-14d %s, 👉 %s x %d\n", prefix, s.OwnerAccountId, p.ProductId, p.ProductName, p.Market, count)
 		}
 		t.Logf("\n")
 	}
