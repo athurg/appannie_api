@@ -50,3 +50,27 @@ func (cli *Client) AccountProducts(accountId int) ([]ProductInfo, error) {
 
 	return resp.Products, err
 }
+
+type IapInfo struct {
+	Name string
+	Sku  string
+	Type string
+}
+
+//TODO:for large responses, need to merge all pages
+func (cli *Client) AccountProductIaps(accountId, productId int) ([]IapInfo, error) {
+	var resp struct {
+		APIResponse
+		PagedAPIResponse
+		Iaps []IapInfo
+	}
+
+	path := fmt.Sprintf("/accounts/%d/products/%d/iaps", accountId, productId)
+	q := url.Values{"page_index": []string{"0"}}
+	err := cli.request(path, q, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Iaps, err
+}
