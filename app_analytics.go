@@ -1,6 +1,7 @@
 package appannie
 
 import (
+	"fmt"
 	"net/url"
 )
 
@@ -26,8 +27,26 @@ func (cli *Client) Accounts() ([]AccountInfo, error) {
 	q := url.Values{"page_index": []string{"0"}}
 	err := cli.request("/accounts", q, &resp)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	return resp.Accounts, err
+}
+
+//TODO:for large responses, need to merge all pages
+func (cli *Client) AccountProducts(accountId int) ([]ProductInfo, error) {
+	var resp struct {
+		APIResponse
+		PagedAPIResponse
+		Products []ProductInfo
+	}
+
+	path := fmt.Sprintf("/accounts/%d/products", accountId)
+	q := url.Values{"page_index": []string{"0"}}
+	err := cli.request(path, q, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Products, err
 }
