@@ -63,3 +63,23 @@ func (cli *Client) MarketMeta() (info MarketMetaResponse, err error) {
 
 	return
 }
+
+type CurrencyInfo struct {
+	CurrencyCode string `json:"currency_code"`
+	FullName     string `json:"full_name"`
+	Symbol       string `json:"symbol"`
+}
+
+type CurrencyMetaResponse struct {
+	APIResponse
+	CurrencyList []CurrencyInfo `json:"currency_list"`
+}
+
+func (cli *Client) CurrencyMeta() (info CurrencyMetaResponse, err error) {
+	err = cli.request("/meta/currencies", nil, &info)
+	if info.Code != 200 {
+		return
+	}
+
+	return
+}
