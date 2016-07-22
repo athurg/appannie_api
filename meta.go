@@ -22,10 +22,6 @@ type CountryMetaResponse struct {
 
 func (cli *Client) CountryMeta() (info CountryMetaResponse, err error) {
 	err = cli.request("/meta/countries", nil, &info)
-	if info.Code != 200 {
-		return
-	}
-
 	return
 }
 
@@ -39,10 +35,6 @@ type CategoryMetaResponse struct {
 //Available market: ios | mac | google-play | amazon-appstore | windows-phone | windows-store
 func (cli *Client) CategoryMeta(vertical, market string) (info CategoryMetaResponse, err error) {
 	err = cli.request("/meta/"+vertical+"/"+market+"/categories", nil, &info)
-	if info.Code != 200 {
-		return
-	}
-
 	return
 }
 
@@ -61,10 +53,6 @@ type MarketMetaResponse struct {
 
 func (cli *Client) MarketMeta() (info MarketMetaResponse, err error) {
 	err = cli.request("/meta/markets", nil, &info)
-	if info.Code != 200 {
-		return
-	}
-
 	return
 }
 
@@ -81,10 +69,6 @@ type CurrencyMetaResponse struct {
 
 func (cli *Client) CurrencyMeta() (info CurrencyMetaResponse, err error) {
 	err = cli.request("/meta/currencies", nil, &info)
-	if info.Code != 200 {
-		return
-	}
-
 	return
 }
 
@@ -102,10 +86,6 @@ type DeviceMetaResponse struct {
 //Available market: ios | mac | google-play | windows-store
 func (cli *Client) DeviceMeta(vertical, market string) (info DeviceMetaResponse, err error) {
 	err = cli.request("/meta/"+vertical+"/"+market+"/devices", nil, &info)
-	if info.Code != 200 {
-		return
-	}
-
 	return
 }
 
@@ -123,10 +103,6 @@ type FeedMetaResponse struct {
 //Available market: ios | mac | google-play | amazon-appstore |  windows-phone | windows-store
 func (cli *Client) FeedMeta(vertical, market string) (info FeedMetaResponse, err error) {
 	err = cli.request("/meta/"+vertical+"/"+market+"/feeds", nil, &info)
-	if info.Code != 200 {
-		return
-	}
-
 	return
 }
 
@@ -143,7 +119,7 @@ func (cli *Client) PackageCodesToProductIds(vertical, market, package_codes stri
 		}
 	}
 	err = cli.request("/"+vertical+"/"+market+"/package-codes2ids", q, &resp)
-	if resp.Code != 200 {
+	if err != nil {
 		return
 	}
 

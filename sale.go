@@ -58,9 +58,6 @@ func (cli *Client) ProductSales(accountId, productId int, start, end time.Time) 
 
 	path := fmt.Sprintf("/accounts/%d/products/%d/sales", accountId, productId)
 	err = cli.request(path, q, &info)
-	if info.Code != 200 {
-		return
-	}
 
 	return
 }

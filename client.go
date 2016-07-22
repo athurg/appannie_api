@@ -2,7 +2,7 @@ package appannie
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -43,7 +43,7 @@ func (resp *APIResponse) Error() error {
 	if resp.Code == 200 {
 		return nil
 	}
-	return errors.New(resp.ErrorMessage)
+	return fmt.Errorf("[%d]%s", resp.Code, resp.ErrorMessage)
 }
 
 //执行API请求（自动处理Token验证）

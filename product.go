@@ -1,7 +1,6 @@
 package appannie
 
 import (
-	"fmt"
 	"net/url"
 )
 
@@ -40,10 +39,6 @@ func (cli *Client) SharingProducts() ([]SharingInfo, error) {
 
 	var info SharingProductsResponse
 	err := cli.request("/sharing/products", q, &info)
-
-	if info.Code != 200 {
-		return nil, fmt.Errorf("错误码[%d] %s", info.Code, info.Error)
-	}
 
 	return info.Sharings, err
 }
