@@ -24,3 +24,21 @@ func (cli *Client) CountryMeta() (info CountryMetaResponse, err error) {
 
 	return
 }
+
+
+type CategoryMetaResponse struct {
+	APIResponse
+	Categories []string `json:"categories"`
+	AppAnnieCategories []string `json:"appannie_categories"`
+}
+
+//Available vertical: apps
+//Available market: ios | mac | google-play | amazon-appstore | windows-phone | windows-store
+func (cli *Client) CategoryMeta(vertical, market string) (info CategoryMetaResponse, err error) {
+	err = cli.request("/meta/"+vertical+"/"+market+"/categories", nil, &info)
+	if info.Code != 200 {
+		return
+	}
+
+	return
+}
