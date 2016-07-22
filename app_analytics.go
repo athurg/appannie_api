@@ -134,3 +134,51 @@ func (cli *Client) ProductAdvertising(vertical, market, asset string, productId 
 
 	return resp.AdItems, err
 }
+
+type UserAdvertisingSalesResponse struct {
+	APIResponse
+	PagedAPIResponse
+	Currency  string
+	UserId    string `json:"user_id"`
+	SalesList []struct {
+		AdAccount  int `json:"ad_account"`
+		Date       string
+		Country    string
+		Market     string
+		AdItemType string `json:"ad_item_type"`
+		ProductId  string `json:"product_id"`
+		AdItemId   string `json:"ad_item_id"`
+		Metrics    struct {
+			//Revenue Metric only fields
+			Revenue        float32
+			Ecpm           float32
+			Ecpc           float32
+			FillRate       float32 `json:"fill_rate"`
+			NumSites       int     `json:"num_sites"`
+			Requests       int
+			MatchedRequest int `json:"matched_request"`
+
+			//Expense Metric only fields
+			Installs     int
+			Expense      float32
+			Ctr          float32
+			Cvr          float32
+			Ecpi         float32
+			NumCampaigns int `json:"num_campaigns"`
+
+			//Both Revenue & Expense Metric fields
+			Impressions int
+			Clicks      int
+			Market      string
+			ProductId   int `json:"product_id"`
+		}
+	} `json:"sales_list"`
+}
+
+//TODO:for large responses, need to merge all pages
+//TODO:Need to be testing
+//param adItemType should be site|campaign, default by both of them
+func (cli *Client) UserAdvertisingSales(vertical string, q url.Values) (info UserAdvertisingSalesResponse, err error) {
+	err = cli.request("/"+vertical+"/sales", q, &info)
+	return
+}
