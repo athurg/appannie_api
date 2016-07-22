@@ -110,3 +110,27 @@ func (cli *Client) AccountAdvertising(accountId int, adItemType string) ([]AdInf
 
 	return resp.AdItems, err
 }
+
+//TODO:for large responses, need to merge all pages
+//TODO:Need to be testing
+//param adItemType should be site|campaign, default by both of them
+func (cli *Client) ProductAdvertising(vertical, market, asset string, productId int, adItemType string) ([]AdInfo, error) {
+	var resp struct {
+		APIResponse
+		PagedAPIResponse
+		AdItems []AdInfo `json:"ad_items"`
+	}
+
+	q := url.Values{"page_index": []string{"0"}}
+	if adItemType != "" {
+		q.Set("ad_item_type", adItemType)
+	}
+
+	path := fmt.Sprintf("/%s/%s/%s/%d/ad_items", vertical, market, asset, productId)
+	err := cli.request(path, q, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.AdItems, err
+}
