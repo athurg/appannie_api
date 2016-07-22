@@ -108,3 +108,33 @@ func (cli *Client) ProductFeature(vertical, market, asset string, productId int,
 
 	return
 }
+
+type ProductReviewResponse struct {
+	APIResponse
+	PagedAPIResponse
+	ProductName string `json:"product_name"`
+	Reviews     []struct {
+		Date     string
+		Country  string
+		Rating   int
+		Title    string
+		Text     string
+		Reviewer string
+		Version  string
+		Device   string
+	}
+}
+
+//Parameter q should include params below:
+//    start_date: yyyy-mm-dd
+//    end_date: yyyy-mm-dd
+//    countries: default all, refer CountryMeta()
+//    verison: specific verison, such as 2.0.1, Google Play not support
+//    rating: default all, Options 1|2|3|4|5, support multiple ratings. Example: 1+2 or 4+5
+//    page_index: 0
+func (cli *Client) ProductReview(vertical, market, asset string, productId int, q url.Values) (info ProductReviewResponse, err error) {
+	path := fmt.Sprintf("/%s/%s/%s/%d/reviews", vertical, market, asset, productId)
+	err = cli.request(path, q, &info)
+
+	return
+}
