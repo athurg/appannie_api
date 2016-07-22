@@ -104,3 +104,24 @@ func (cli *Client) DeviceMeta(vertical, market string) (info DeviceMetaResponse,
 
 	return
 }
+
+type FeedInfo struct {
+	FeedCode string `json:"feed_code"`
+	FeedName string `json:"feed_name"`
+}
+
+type FeedMetaResponse struct {
+	APIResponse
+	Feeds []FeedInfo `json:"feeds"`
+}
+
+//Available vertical: apps
+//Available market: ios | mac | google-play | amazon-appstore |  windows-phone | windows-store
+func (cli *Client) FeedMeta(vertical, market string) (info FeedMetaResponse, err error) {
+	err = cli.request("/meta/"+vertical+"/"+market+"/feeds", nil, &info)
+	if info.Code != 200 {
+		return
+	}
+
+	return
+}
