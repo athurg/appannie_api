@@ -7,10 +7,10 @@ import (
 )
 
 type SaleInfo struct {
-	Date    string
+	Date      string
 	ProductId string `json:"product_id,omitempty"`
-	Country string
-	Units   struct {
+	Country   string
+	Units     struct {
 		Product struct{ Downloads, Updates, Refunds, Promotions int64 }
 		Iap     struct{ Sales, Refunds, Promotions int }
 	}
