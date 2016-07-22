@@ -1,5 +1,9 @@
 package appannie
 
+import (
+	"net/url"
+)
+
 type CountryInfo struct {
 	CountryCode string `json:"country_code"`
 	CountryName string `json:"country_name"`
@@ -121,6 +125,31 @@ func (cli *Client) FeedMeta(vertical, market string) (info FeedMetaResponse, err
 	err = cli.request("/meta/"+vertical+"/"+market+"/feeds", nil, &info)
 	if info.Code != 200 {
 		return
+	}
+
+	return
+}
+
+//Available vertical: apps
+//Available market: ios | google-play
+//package_codes: BundleID for iOS, class for GP, split by comma
+func (cli *Client) PackageCodesToProductIds(vertical, market, package_codes string) (result map[string]int, err error) {
+	q := url.Values{"package_codes": []string{package_codes}}
+	var resp struct {
+		APIResponse
+		Items []struct {
+			ProductId   int    `json:"product_id"`
+			PackageCode string `json:"package_code"`
+		}
+	}
+	err = cli.request("/"+vertical+"/"+market+"/package-codes2ids", q, &resp)
+	if resp.Code != 200 {
+		return
+	}
+
+	result = make(map[string]int)
+	for _, info := range resp.Items {
+		result[info.PackageCode] = info.ProductId
 	}
 
 	return
