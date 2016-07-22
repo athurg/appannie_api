@@ -39,6 +39,13 @@ type APIResponse struct {
 	ErrorMessage string `json:"error"`
 }
 
+type PagedAPIResponse struct {
+	PageNum   int    `json:"page_num"`
+	PageIndex int    `json:"page_index"`
+	PrevPage  string `json:"prev_page"`
+	NextPage  string `json:"next_page"`
+}
+
 func (resp *APIResponse) Error() error {
 	if resp.Code == 200 {
 		return nil
