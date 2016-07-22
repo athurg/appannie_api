@@ -52,3 +52,33 @@ func (cli *Client) ProductRatings(vertical, market, asset string, productId, pag
 
 	return
 }
+
+type ProductRankResponse struct {
+	APIResponse
+	PagedAPIResponse
+	ProductName  string `json:"product_name"`
+	Device       string `json:"device"`
+	UpdateTime   map[string]string
+	ProductRanks []struct {
+		Country  string
+		Category string
+		Feed     string
+		Interval string
+		Ranks    map[string]int
+	} `json:"product_ranks"`
+}
+
+//Parameter q should include params below:
+//    start_date: yyyy-mm-dd
+//    end_date: yyyy-mm-dd
+//    interval: default daily, or hourly
+//    countries: default all, refer CountryMeta()
+//    category: default all, refer CategoryMeta()
+//    feed: free | paid | grossing | new | top_new_free | top_new_paid | new_rising
+//    device: iphone | ipad | mac | android | x86 | x64 | arm
+func (cli *Client) ProductRank(vertical, market, asset string, productId int, q url.Values) (info ProductRankResponse, err error) {
+	path := fmt.Sprintf("/%s/%s/%s/%d/ranks", vertical, market, asset, productId)
+	err = cli.request(path, q, &info)
+
+	return
+}
