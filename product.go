@@ -13,6 +13,30 @@ type ProductInfo struct {
 	Status         bool   `json:"status"`
 	FirstSalesDate string `json:"first_sales_date"`
 	LastSalesDate  string `json:"last_sales_date"`
+
+	Vertical                 string   `json:"vertical"`
+	BundleId                 string   `json:"bundle_id"`
+	PublisherName            string   `json:"publisher_name"`
+	Description              string   `json:"description"`
+	CurrentVersion           string   `json:"current_version"`
+	ReleaseDate              string   `json:"release_date"`
+	LastUpdate               string   `json:"last_update"`
+	Size                     string   `json:"size"`
+	Languages                string   `json:"languages"`
+	MainCategory             string   `json:"main_category"`
+	OtherCategories          string   `json:"other_categories"`
+	PublisherId              int      `json:"publisher_id"`
+	Price                    float32  `json:"price"`
+	PurchasedSeparatelyPrice float32  `json:"purchased_separately_price"` //iOS only,list
+	Unpublished              bool     `json:"unpublished"`
+	HasIap                   bool     `json:"has_iap"`
+	OriginalIcon             string   `json:"original_icon"`            //icon url from app store
+	ProductType              string   `json:"product_type"`             //iOS only App|Bundle
+	Seller                   string   `json:"seller"`                   //iOS only
+	FamilySharing            string   `json:"family_sharing"`           //iOS only, Yes|No
+	AppsInThisBundle         []string `json:"apps_in_this_bundle"`      //iOS only
+	BundlesContainThisApp    []string `json:"bundles_contain_this_app"` //iOS only
+	SupportedDeviceList      []string `json:"supported_device_list"`    //iOS only
 }
 
 //分享信息
