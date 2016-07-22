@@ -33,7 +33,6 @@ type IapSaleInfo struct {
 	}
 }
 
-//分享响应信息
 type ProductSaleResponse struct {
 	APIResponse
 	Currency  string

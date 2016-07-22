@@ -9,7 +9,6 @@ func TestSharingProducts(t *testing.T) {
 	end := time.Now()
 	start := end.AddDate(0, -3, 0)
 
-	//测试前请输入有效的AppAnnieKey
 	sharings, err := testClient.SharingProducts()
 	if err != nil {
 		t.Error(err)

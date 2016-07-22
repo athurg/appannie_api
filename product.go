@@ -4,7 +4,6 @@ import (
 	"net/url"
 )
 
-//分享的产品信息
 type ProductInfo struct {
 	ProductId      int    `json:"product_id"`
 	ProductName    string `json:"product_name"`
@@ -39,7 +38,6 @@ type ProductInfo struct {
 	SupportedDeviceList      []string `json:"supported_device_list"`    //iOS only
 }
 
-//分享信息
 type SharingInfo struct {
 	Vertical       string `json:"vertical"`
 	OwnerAccountId int    `json:"owner_account_id"`
@@ -47,7 +45,6 @@ type SharingInfo struct {
 	Products       []ProductInfo
 }
 
-//分享响应信息
 type SharingProductsResponse struct {
 	APIResponse
 	Sharings  []SharingInfo
