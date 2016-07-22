@@ -83,3 +83,24 @@ func (cli *Client) CurrencyMeta() (info CurrencyMetaResponse, err error) {
 
 	return
 }
+
+type DeviceInfo struct {
+	DeviceCode string `json:"device_code"`
+	DeviceName string `json:"device_name"`
+}
+
+type DeviceMetaResponse struct {
+	APIResponse
+	Devices []DeviceInfo `json:"devices"`
+}
+
+//Available vertical: apps
+//Available market: ios | mac | google-play | windows-store
+func (cli *Client) DeviceMeta(vertical, market string) (info DeviceMetaResponse, err error) {
+	err = cli.request("/meta/"+vertical+"/"+market+"/devices", nil, &info)
+	if info.Code != 200 {
+		return
+	}
+
+	return
+}
