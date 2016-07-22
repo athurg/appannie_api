@@ -14,28 +14,36 @@ type RegionInfo struct {
 	RegionName string `json:"region_name"`
 }
 
-type CountryMetaResponse struct {
-	APIResponse
-	CountryList []CountryInfo `json:"country_list"`
-	RegionList  []RegionInfo  `json:"region_list"`
-}
+func (cli *Client) CountryMeta() ([]CountryInfo, []RegionInfo, error) {
+	var resp struct {
+		APIResponse
+		CountryList []CountryInfo `json:"country_list"`
+		RegionList  []RegionInfo  `json:"region_list"`
+	}
 
-func (cli *Client) CountryMeta() (info CountryMetaResponse, err error) {
-	err = cli.request("/meta/countries", nil, &info)
-	return
-}
+	err := cli.request("/meta/countries", nil, &resp)
+	if err != nil {
+		return nil, nil, err
+	}
 
-type CategoryMetaResponse struct {
-	APIResponse
-	Categories         []string `json:"categories"`
-	AppAnnieCategories []string `json:"appannie_categories"`
+	return resp.CountryList, resp.RegionList, nil
 }
 
 //Available vertical: apps
 //Available market: ios | mac | google-play | amazon-appstore | windows-phone | windows-store
-func (cli *Client) CategoryMeta(vertical, market string) (info CategoryMetaResponse, err error) {
-	err = cli.request("/meta/"+vertical+"/"+market+"/categories", nil, &info)
-	return
+func (cli *Client) CategoryMeta(vertical, market string) ([]string, []string, error) {
+	var resp struct {
+		APIResponse
+		Categories         []string
+		AppAnnieCategories []string `json:"appannie_categories"`
+	}
+
+	err := cli.request("/meta/"+vertical+"/"+market+"/categories", nil, &resp)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return resp.Categories, resp.AppAnnieCategories, nil
 }
 
 type MarketInfo struct {
@@ -62,14 +70,18 @@ type CurrencyInfo struct {
 	Symbol       string `json:"symbol"`
 }
 
-type CurrencyMetaResponse struct {
-	APIResponse
-	CurrencyList []CurrencyInfo `json:"currency_list"`
-}
+func (cli *Client) CurrencyMeta() ([]CurrencyInfo, error) {
+	var resp struct {
+		APIResponse
+		CurrencyList []CurrencyInfo `json:"currency_list"`
+	}
 
-func (cli *Client) CurrencyMeta() (info CurrencyMetaResponse, err error) {
-	err = cli.request("/meta/currencies", nil, &info)
-	return
+	err := cli.request("/meta/currencies", nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.CurrencyList, nil
 }
 
 type DeviceInfo struct {
@@ -77,16 +89,20 @@ type DeviceInfo struct {
 	DeviceName string `json:"device_name"`
 }
 
-type DeviceMetaResponse struct {
-	APIResponse
-	Devices []DeviceInfo `json:"devices"`
-}
-
 //Available vertical: apps
 //Available market: ios | mac | google-play | windows-store
-func (cli *Client) DeviceMeta(vertical, market string) (info DeviceMetaResponse, err error) {
-	err = cli.request("/meta/"+vertical+"/"+market+"/devices", nil, &info)
-	return
+func (cli *Client) DeviceMeta(vertical, market string) ([]DeviceInfo, error) {
+	var resp struct {
+		APIResponse
+		Devices []DeviceInfo `json:"devices"`
+	}
+
+	err := cli.request("/meta/"+vertical+"/"+market+"/devices", nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Devices, nil
 }
 
 type FeedInfo struct {
@@ -94,23 +110,29 @@ type FeedInfo struct {
 	FeedName string `json:"feed_name"`
 }
 
-type FeedMetaResponse struct {
-	APIResponse
-	Feeds []FeedInfo `json:"feeds"`
-}
-
 //Available vertical: apps
 //Available market: ios | mac | google-play | amazon-appstore |  windows-phone | windows-store
-func (cli *Client) FeedMeta(vertical, market string) (info FeedMetaResponse, err error) {
-	err = cli.request("/meta/"+vertical+"/"+market+"/feeds", nil, &info)
-	return
+func (cli *Client) FeedMeta(vertical, market string) ([]FeedInfo, error) {
+	var resp struct {
+		APIResponse
+		Feeds []FeedInfo `json:"feeds"`
+	}
+
+	err := cli.request("/meta/"+vertical+"/"+market+"/feeds", nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Feeds, nil
 }
 
 //Available vertical: apps
 //Available market: ios | google-play
 //package_codes: BundleID for iOS, class for GP, split by comma
-func (cli *Client) PackageCodesToProductIds(vertical, market, package_codes string) (result map[string]int, err error) {
-	q := url.Values{"package_codes": []string{package_codes}}
+func (cli *Client) PackageCodesToProductIds(vertical, market, package_codes string) (map[string]int, error) {
+	q := url.Values{
+		"package_codes": []string{package_codes},
+	}
+
 	var resp struct {
 		APIResponse
 		Items []struct {
@@ -118,15 +140,16 @@ func (cli *Client) PackageCodesToProductIds(vertical, market, package_codes stri
 			PackageCode string `json:"package_code"`
 		}
 	}
-	err = cli.request("/"+vertical+"/"+market+"/package-codes2ids", q, &resp)
+
+	err := cli.request("/"+vertical+"/"+market+"/package-codes2ids", q, &resp)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	result = make(map[string]int)
+	result := make(map[string]int)
 	for _, info := range resp.Items {
 		result[info.PackageCode] = info.ProductId
 	}
 
-	return
+	return result, nil
 }
