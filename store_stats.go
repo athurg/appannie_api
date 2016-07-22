@@ -82,3 +82,29 @@ func (cli *Client) ProductRank(vertical, market, asset string, productId int, q 
 
 	return
 }
+
+type ProductFeatureResponse struct {
+	APIResponse
+	PagedAPIResponse
+	ProductName string `json:"product_name"`
+	Features    []struct {
+		Level    int
+		Position int
+		Date     string
+		Country  string
+		Device   string
+		Section  string
+	}
+}
+
+//Parameter q should include params below:
+//    start_date: yyyy-mm-dd
+//    end_date: yyyy-mm-dd
+//    countries: default all, refer CountryMeta()
+//    page_index: 0
+func (cli *Client) ProductFeature(vertical, market, asset string, productId int, q url.Values) (info ProductFeatureResponse, err error) {
+	path := fmt.Sprintf("/%s/%s/%s/%d/features", vertical, market, asset, productId)
+	err = cli.request(path, q, &info)
+
+	return
+}
