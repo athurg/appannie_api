@@ -1,8 +1,8 @@
 package appannie
 
 import (
-	"time"
 	"testing"
+	"time"
 )
 
 func TestSharingProducts(t *testing.T) {
@@ -10,8 +10,7 @@ func TestSharingProducts(t *testing.T) {
 	start := end.AddDate(0, -3, 0)
 
 	//测试前请输入有效的AppAnnieKey
-	client := New("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "")
-	sharings, err := client.SharingProducts()
+	sharings, err := testClient.SharingProducts()
 	if err != nil {
 		t.Error(err)
 		return
@@ -20,7 +19,7 @@ func TestSharingProducts(t *testing.T) {
 	for _, s := range sharings {
 		for _, p := range s.Products {
 			var count = -1
-			resp, err := client.ProductSales(s.OwnerAccountId, p.ProductId, start, end)
+			resp, err := testClient.ProductSales(s.OwnerAccountId, p.ProductId, start, end)
 			if err != nil {
 				t.Error(err)
 			} else {
@@ -28,9 +27,9 @@ func TestSharingProducts(t *testing.T) {
 			}
 
 			var prefix string
-			if p.Status==false {
+			if p.Status == false {
 				prefix = "❌"
-			} else if count>0 {
+			} else if count > 0 {
 				prefix = "✅"
 			} else {
 				prefix = "⚠️"

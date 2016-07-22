@@ -2,6 +2,7 @@ package appannie
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -29,8 +30,25 @@ func (cli *Client) ApiUrl() string {
 	return "https://api.appannie.com/" + cli.ApiVersion
 }
 
+type APIResponser interface {
+	Error() error
+}
+
+type APIResponse struct {
+	Code         int    `json:"code"`
+	ErrorMessage string `json:"error"`
+}
+
+func (resp *APIResponse) Error() error {
+	if resp.Code == 200 {
+		return nil
+	}
+	return errors.New(resp.ErrorMessage)
+}
+
 //执行API请求（自动处理Token验证）
-func (cli *Client) request(path string, q url.Values, result interface{}) error {
+//TODO:目前API有30次每分钟、1000次每天的请求限制
+func (cli *Client) request(path string, q url.Values, result APIResponser) error {
 	client := &http.Client{}
 
 	uri := cli.ApiUrl() + path + "?" + q.Encode()
@@ -44,5 +62,10 @@ func (cli *Client) request(path string, q url.Values, result interface{}) error 
 
 	defer resp.Body.Close()
 
-	return json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return err
+	}
+
+	return result.Error()
 }

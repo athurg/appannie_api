@@ -34,7 +34,7 @@ type IapSaleInfo struct {
 
 //分享响应信息
 type ProductSaleResponse struct {
-	Code      int
+	APIResponse
 	Currency  string
 	Vertical  string
 	Market    string
@@ -47,7 +47,7 @@ type ProductSaleResponse struct {
 	NextPage  int `json:"next_page"`
 }
 
-func (cli *Client) ProductSales(accountId, productId int64, start, end time.Time) (info ProductSaleResponse, err error) {
+func (cli *Client) ProductSales(accountId, productId int, start, end time.Time) (info ProductSaleResponse, err error) {
 	q := url.Values{}
 	q.Set("break_down", "date")
 	q.Set("start_date", start.Format("2006-01-02"))

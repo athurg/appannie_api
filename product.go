@@ -7,7 +7,7 @@ import (
 
 //分享的产品信息
 type ProductInfo struct {
-	ProductId      int64  `json:"product_id"`
+	ProductId      int    `json:"product_id"`
 	ProductName    string `json:"product_name"`
 	Icon           string `json:"icon"`
 	Market         string `json:"market"`
@@ -19,15 +19,14 @@ type ProductInfo struct {
 //分享信息
 type SharingInfo struct {
 	Vertical       string `json:"vertical"`
-	OwnerAccountId int64  `json:"owner_account_id"`
+	OwnerAccountId int    `json:"owner_account_id"`
 	OwnerName      string `json:"owner_name"`
 	Products       []ProductInfo
 }
 
 //分享响应信息
 type SharingProductsResponse struct {
-	Code      int
-	Error     string
+	APIResponse
 	Sharings  []SharingInfo
 	PageNum   int `json:"page_num"`
 	PageIndex int `json:"page_index"`

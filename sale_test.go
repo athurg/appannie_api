@@ -1,27 +1,27 @@
 package appannie
 
 import (
+	"os"
+	"strconv"
 	"testing"
 	"time"
 )
 
 func TestProductSales(t *testing.T) {
-	//测试前请输入有效的AppAnnieKey和账户、产品ID
-	client := New("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "")
-	var accountId int64 = 11111
-	var productId int64 = 22222222222222
 	end := time.Now()
 	start := end.AddDate(0, -1, 0)
 
-	t.Log("从", start, "到", end)
+	var accountId, productId int
+	accountId, _ = strconv.Atoi(os.Getenv("ACCOUNT_ID"))
+	productId, _ = strconv.Atoi(os.Getenv("PRODUCT_ID"))
 
-	resp, err := client.ProductSales(accountId, productId, start, end)
+	resp, err := testClient.ProductSales(accountId, productId, start, end)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	t.Logf("销售记录%d条\n", len(resp.SalesList))
+	t.Logf("Sale records x%d , between %s and %s.\n", len(resp.SalesList), start, end)
 	for _, rec := range resp.SalesList {
 		t.Logf("%+v", rec)
 	}
